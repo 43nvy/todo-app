@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 
@@ -32,4 +33,20 @@ func (h *Handler) userIdentity(ctx *gin.Context) {
 	}
 
 	ctx.Set(userCtx, userId)
+}
+
+func getUserId(ctx *gin.Context) (int, error) {
+	id, ok := ctx.Get(userCtx)
+	if !ok {
+		newErrorResponse(ctx, http.StatusInternalServerError, "user id no found")
+		return 0, errors.New("user id not found")
+	}
+
+	idInt, ok := id.(int)
+	if !ok {
+		newErrorResponse(ctx, http.StatusInternalServerError, "user id no found")
+		return 0, errors.New("user id not found")
+	}
+
+	return idInt, nil
 }
