@@ -26,3 +26,12 @@ func (a *AuthPG) CreateUser(user todo.User) (int, error) {
 
 	return id, nil
 }
+
+func (a *AuthPG) GetUser(username, password string) (todo.User, error) {
+	var user todo.User
+
+	query := fmt.Sprintf("SELECT id FROM %s WHERE username=$1 and password_hash=$2", usersTable)
+	err := a.db.Get(&user, query, username, password)
+
+	return user, err
+}
